@@ -3,7 +3,7 @@ import { reactive, ref } from 'vue'
 import { usePeer } from '@/hooks/usePeer';
 
 const connectionStatus = reactive([
-  '连接中...', '连接成功！', '连接失败！'
+  '连接中...', '连接123成功！', '连接失败！'
 ])
 const status = ref(0)
 
