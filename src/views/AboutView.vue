@@ -12,9 +12,7 @@ const connectionStatus = reactive([
 const status = ref(0)
 
 const message = ref('')
-const send = () => {
-  console.log(message.value)
-}
+
 
 const onReceive = (data: unknown) => {
   console.log('接收到消息')
@@ -26,24 +24,33 @@ const onOpen = (id: string) => {
   status.value = 1
 }
 const targetPeerId = route.params.id as string
-usePeer({
+let connect
+
+
+const start = () => {
+  status.value = 0
+  const {conn} = usePeer({
   targetPeerId,
   onReceive,
   onOpen
 })
+connect = conn
+}
 
+const sendMessage = () => {
+  connect.send(message.value)
+}
 </script>
-
 <template>
   <div>
 
     <h3>
       about
     </h3>
-    <button @click="send">链接</button>
+    <button @click="start">链接</button>
 
 
     <input v-model="message">
-    <button @click="send">发送</button>
+    <button @click="sendMessage">发送</button>
   </div>
 </template>
