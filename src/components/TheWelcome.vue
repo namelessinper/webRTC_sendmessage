@@ -18,19 +18,16 @@ const onOpen = (id: string) => {
   console.log('连接成功' + id)
   status.value = 1
 }
-let connect
+let connect:any = null
 const start = async () => {
   console.log('启动')
   status.value = 0
-  const { conn } = await usePeer({
+  const conn = await usePeer({
     onReceive,
     onOpen
   })
   connect = conn
 }
-
-
-
 const sendMessage = () => {
   console.log('发送消息')
   console.log(message.value)
@@ -38,7 +35,6 @@ const sendMessage = () => {
   connect.send(message.value)
 }
 </script>
-
 <template>
   <div>
 
