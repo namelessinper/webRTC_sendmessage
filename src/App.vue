@@ -9,13 +9,11 @@ import WebRTCProvider from '@/components/WebRTCProvider.vue'
   <n-config-provider :theme="darkTheme">
     <n-message-provider>
       <WebRTCProvider>
-        <n-layout>
-          <n-layout has-sider>
+          <n-layout >
             <n-layout-content content-style="padding: 24px;">
               <RouterView />
             </n-layout-content>
           </n-layout>
-        </n-layout>
       </WebRTCProvider>
     </n-message-provider>
   </n-config-provider>
