@@ -1,14 +1,22 @@
 <script setup lang="ts">
 import { inject, ref } from 'vue'
 import type { peerProviderOptions } from '@/hooks/peerTypes'
-import { NDescriptions, NDescriptionsItem, NTabs, NTabPane } from 'naive-ui'
+import { NDescriptions, NDescriptionsItem, NButton, NIcon } from 'naive-ui'
+import { Add } from '@vicons/ionicons5'
+import AddModal from '@/components/AddModal.vue'
+import LinksPanls from '@/components/LinksPanls.vue'
+const peerOptions = inject<peerProviderOptions>('peerOptions')
 
-const peerOptions: peerProviderOptions | undefined = inject('peerOptions')
-const test = () => {
-  console.log(peerOptions)
+
+const showAddModal = ref(false)
+const add = () => {
+  showAddModal.value = true
 }
 
-
+const addAction = async (id: string) => {
+  await peerOptions?.connectionActions?.connect(id)
+  showAddModal.value = false
+}
 
 </script>
 
@@ -26,22 +34,20 @@ const test = () => {
     </n-descriptions-item>
     <n-descriptions-item>
       <template #label>
-        <div class="flex items-center">
-          <div class="w-[50px] h-[30px]">链接：</div>
-          <n-tabs type="line" animated>
-            <n-tab-pane name="oasis" tab="Oasis">
-            </n-tab-pane>
-            <n-tab-pane name="the beatles" tab="the Beatles">
-            </n-tab-pane>
-            <n-tab-pane name="jay chou" tab="周杰伦">
-            </n-tab-pane>
-          </n-tabs>
-
+        <div class="flex justify-between items-center">
+          <span>链接</span>
+          <n-button quaternary type="primary" @click="add">
+            <template #icon>
+              <NIcon>
+                <Add />
+              </NIcon>
+            </template>
+            发起链接
+          </n-button>
         </div>
-
       </template>
-      {{ peerOptions?.connectionState }}
+      <LinksPanls />
     </n-descriptions-item>
   </n-descriptions>
-
+  <AddModal v-model:show="showAddModal" @submit="addAction" />
 </template>

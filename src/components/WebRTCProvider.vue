@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { reactive, ref, provide, computed, type ComputedRef } from 'vue'
+import { reactive, ref, provide, computed } from 'vue'
 import { NButton, NInput, useMessage } from 'naive-ui'
-import type { openOptions, peerOptions, peerReturn, connectionState, peerProviderOptions } from '@/hooks/peerTypes'
-
+import type { peerUserInfo, peerOptions, connectionState, peerProviderOptions, receivedData } from '@/hooks/peerTypes'
+import { type DataConnection } from 'peerjs'
 import { usePeer } from '@/hooks/usePeer';
-import type { DataConnection } from 'peerjs'
 const username = ref('')
 const message = useMessage()
 
@@ -23,15 +22,41 @@ const peerOptions = reactive<peerProviderOptions>({
 
 provide('peerOptions', peerOptions)
 
-const onMainReceive = (data: { id: string, data: unknown }) => {
+const onReceive = (data: receivedData) => {
     console.log(data)
+    const index = peerOptions.connects.findIndex(item => item.conn.peer === data.id)
+    if (index !== -1) {
+        peerOptions.connects[index].reciveData.push(data.data)
+        if(data.data.data.status === 'success'){
+            peerOptions.connects[index].userInfo = data.data.userInfo
+        }
+        console.log(peerOptions)
+    }
+
 }
 
-const onOpen = ({ id, username }: openOptions) => {
+const onMainReceive = (data: receivedData) => {
+    onReceive(data)
+}
+
+const onConnectRecive = (data: receivedData) => {
+    onReceive(data)
+
+}
+
+const onOpen = ({ id, username }: peerUserInfo) => {
     state.value = 1
     peerOptions.userInfo = { id, username }
 }
 
+const onConnected = (conn: DataConnection) => {
+    console.log('onConnected')
+    console.log(conn)
+    if (!peerOptions.connects.some(item => item.conn.peer === conn.peer)) {
+        peerOptions.connects.push({ conn, reciveData: [],userInfo: null })
+    }
+    console.log(peerOptions)
+}
 
 
 const start = async () => {
@@ -44,7 +69,9 @@ const start = async () => {
     const { open, connect } = usePeer({
         peerId: username.value,
         onMainReceive,
-        onOpen
+        onOpen,
+        onConnectRecive,
+        onConnected
     })
     peerOptions.connectionActions = {
         open,
