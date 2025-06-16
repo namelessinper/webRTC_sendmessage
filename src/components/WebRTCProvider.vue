@@ -38,12 +38,13 @@ const start = async () => {
     } 
     console.log('启动')
     state = 0
-    const conn = await usePeer({
+    const peer =  usePeer({
         peerId: username.value,
         onMainReceive,
         onOpen
     })
-    peerOptions.connects.push(conn)
+    console.log(peer)
+
 }
 
 
