@@ -36,7 +36,7 @@ const addAction = async (id: string) => {
       <template #label>
         <div class="flex justify-between items-center">
           <span>链接</span>
-          <n-button quaternary type="primary" @click="add">
+          <n-button quaternary type="primary" @click="add" ghost>
             <template #icon>
               <NIcon>
                 <Add />

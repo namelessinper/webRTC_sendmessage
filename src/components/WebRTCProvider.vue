@@ -17,7 +17,10 @@ const peerOptions = reactive<peerProviderOptions>({
     ),
     connects: [],
     userInfo: null,
-    connectionActions: null
+    connectionActions: null,
+    actions: {
+        sendData: null
+    }
 })
 
 provide('peerOptions', peerOptions)
@@ -27,7 +30,7 @@ const onReceive = (data: receivedData) => {
     const index = peerOptions.connects.findIndex(item => item.conn.peer === data.id)
     if (index !== -1) {
         peerOptions.connects[index].reciveData.push(data.data)
-        if(data.data.data.status === 'success'){
+        if (data.data.data.status === 'success') {
             peerOptions.connects[index].userInfo = data.data.userInfo
         }
         console.log(peerOptions)
@@ -53,7 +56,7 @@ const onConnected = (conn: DataConnection) => {
     console.log('onConnected')
     console.log(conn)
     if (!peerOptions.connects.some(item => item.conn.peer === conn.peer)) {
-        peerOptions.connects.push({ conn, reciveData: [],userInfo: null })
+        peerOptions.connects.push({ conn, reciveData: [], userInfo: null })
     }
     console.log(peerOptions)
 }
@@ -66,7 +69,7 @@ const start = async () => {
     }
     console.log('启动')
     state.value = 0
-    const { open, connect } = usePeer({
+    const { open, connect, send } = usePeer({
         peerId: username.value,
         onMainReceive,
         onOpen,
@@ -75,10 +78,25 @@ const start = async () => {
     })
     peerOptions.connectionActions = {
         open,
-        connect
+        connect,
+        send
     }
     open()
+
+    const sendData = (id: string, data: any) => {
+        const index = peerOptions.connects.findIndex(item => item.conn.peer === id)
+        if (index !== -1) {
+            const conn = peerOptions.connects[index].conn
+            const sendData = peerOptions.connectionActions?.send(conn as DataConnection, data)
+            if (sendData) peerOptions.connects[index].reciveData.push(sendData)
+
+        }
+    }
+    peerOptions.actions.sendData = sendData
+
 }
+
+
 
 
 </script>

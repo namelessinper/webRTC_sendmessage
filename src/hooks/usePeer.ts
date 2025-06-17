@@ -1,4 +1,4 @@
-import { Peer } from 'peerjs'
+import { type DataConnection, Peer } from 'peerjs'
 import { HashCode } from '@/utils/HashCode'
 import type { peerOptions, peerReturn } from './peerTypes'
 import { usePeerSend, type peerDataReturn } from './usePeerSend'
@@ -60,9 +60,16 @@ export const usePeer = ({
        
     }
 
+    const send = (conn: DataConnection, data: any):peerDataReturn => {
+        const sendData = usePeerData(data)
+        conn.send(sendData)
+        return sendData
+    }
+
     return {
         open,
-        connect
+        connect,
+        send
     }
 
 }

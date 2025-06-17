@@ -24,6 +24,7 @@ export type peerOptions = {
 export type peerReturn = {
     open: () => void
     connect: (targetPeerId: string) => void
+    send: (conn: DataConnection, data: any) => peerDataReturn
 }
 
 export type connectsData = {
@@ -37,4 +38,7 @@ export type peerProviderOptions = {
     connects: connectsData[],
     userInfo: peerUserInfo | null
     connectionActions: peerReturn | null
+    actions:{
+        sendData: ((id: string, data: any) => void) | null
+    }
 }

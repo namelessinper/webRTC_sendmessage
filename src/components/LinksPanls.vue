@@ -8,18 +8,22 @@
 
                     <n-list-item v-for="receivedData in item.reciveData">
                         <template #prefix>
-                            <n-tag :type="receivedData.data.status as any ">{{ receivedData.data.status }}</n-tag>
+                            <n-tag :type="receivedData.data.status as any">{{ receivedData.data.status }}</n-tag>
                         </template>
-                        <n-thing :title="receivedData.data.type" :title-extra="receivedData.data.time"
-                            :description="receivedData.data.data">
-
+                        <n-thing :title="receivedData.userInfo.username" :title-extra="receivedData.data.time">
+                            <template v-if="receivedData.data.type === 'data'" #description>
+                                <p :class="receivedData.userInfo.id === tabValue ? '' : 'text-right'"
+                                    class="pr-40 text-3xl">{{
+                                        receivedData.data.data }}
+                                </p>
+                            </template>
                         </n-thing>
                     </n-list-item>
 
                 </n-list>
-                <n-input v-model:value="sendMessage" type="textarea" placeholder="基本的 Textarea">
+                <n-input v-model:value="sendMessage" type="textarea" placeholder="回复消息">
                     <template #suffix>
-                        <n-button quaternary type="primary" circle>
+                        <n-button quaternary type="primary" circle @click="handleSend">
                             <template #icon>
                                 <n-icon class="cursor-pointer" :component="NavigateOutline" />
 
@@ -53,4 +57,12 @@ const tabClick = (val: string) => {
 watchEffect(() => {
     if (tabValue.value === '') tabValue.value = peerOptions?.connects[0]?.userInfo?.id || ''
 })
+
+const handleSend = () => {
+    console.log('handleSend')
+    if (!sendMessage.value) return
+    if (peerOptions?.actions?.sendData !== null) peerOptions?.actions?.sendData(tabValue.value, sendMessage.value)
+
+    sendMessage.value = ''
+}
 </script>
