@@ -17,14 +17,17 @@ export const usePeer = ({
     const open = () => {
         localStorage.removeItem('peerId_main')
         peer = new Peer(mainId, {
+            host: "8.148.71.161",
+            port: 9000,
+            path: "/peerjs",
             debug: 3, config: {
                 iceServers: [
                     { urls: 'stun:stun.l.google.com:19302' },
                     {
                         urls: [`turn:8.148.71.161:3478`, `turns:8.148.71.161:5349`],
-                        username:'liuyx',
+                        username: 'liuyx',
                         credential: 'yxliu',
-                      },
+                    },
                 ]
             },
         })
