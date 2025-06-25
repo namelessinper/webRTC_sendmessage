@@ -2,11 +2,14 @@
 import { NLayout, NLayoutContent, NConfigProvider, NMessageProvider } from 'naive-ui'
 import { darkTheme } from 'naive-ui'
 import WebRTCProvider from '@/components/WebRTCProvider.vue'
+import { ref } from 'vue'
 
+const theme = ref<any>(null)
+if(window.matchMedia('(prefers-color-scheme: dark)').matches) theme.value = darkTheme
 </script>
 
 <template>
-  <n-config-provider :theme="darkTheme">
+  <n-config-provider :theme="theme">
     <n-message-provider>
       <WebRTCProvider>
           <n-layout >
